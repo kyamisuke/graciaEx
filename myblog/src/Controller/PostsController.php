@@ -28,10 +28,19 @@ class PostsController extends AppController
         $this->loadModel('Tags');
         $tags = $this->Tags->find('all');
 
+        $this->loadModel('Items');
+        $items = $this->Items->find('all', array(
+            'conditions' => array('post_id' => $id)
+        ));
+
         $this->set(compact('post'));
         $this->set(compact('category'));
         $this->set(compact('post_tags'));
         $this->set(compact('tags'));
+        $this->set(compact('items'));
+
+        $session = $this->getRequest()->getSession();
+        $session->write('Config.checked_articles.'.$id, $id);
     }
 
     public function add()
@@ -40,7 +49,6 @@ class PostsController extends AppController
         $post->title = "New Post";
         $this->Posts->save($post);
         return $this->redirect(['action'=>'edit', $post->id]);
-        $this->set(compact('post'));
     }
 
     public function edit($id = null)
@@ -48,13 +56,22 @@ class PostsController extends AppController
         $this->loadModel('Categories');
         $categories = $this->Categories->find('all');
         $this->set(compact('categories'));
+
         $this->loadModel('Tags');
         $tags = $this->Tags->find('all');
         $this->set(compact('tags'));
+
         $this->loadModel('PostsTags');
         $post = $this->Posts->get($id);
         $post_tags = $this->PostsTags->find('all');
         $this->set(compact('post_tags'));
+
+        $this->loadModel('Items');
+        $items = $this->Items->find('all', array(
+            'conditions' => array('post_id' => $id)
+        ));
+        $this->set(compact('items'));
+
         if ($this->request->is(['post', 'patch', 'put'])) {
             $this->PostsTags->deleteAll(array('post_id' => $id), false);
             $post = $this->Posts->patchEntity($post, $this->request->data);
@@ -86,5 +103,14 @@ class PostsController extends AppController
             $this->Flash->error('Delete Error!');
         }
         return $this->redirect(['action'=>'index']);
+    }
+
+    public function recent() {
+        $session = $this->getRequest()->getSession();
+        $session->read('Config.language');
+        $this->set('checked_articles', $session->read('Config.checked_articles'));
+
+        $posts = $this->Posts->find('all');
+        $this->set(compact('posts'));
     }
 }

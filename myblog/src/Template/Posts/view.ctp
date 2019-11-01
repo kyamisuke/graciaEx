@@ -20,6 +20,15 @@ $this->assign('title', 'Blog Detail');
     <?php endforeach;?>
 </h1>
 
+<h1>
+    Articles
+    <ul>
+        <?php foreach ($items as $item):?>
+            <li class="fs12"><?php echo $item->content; ?></li>
+        <?php endforeach; ?>
+    </ul>
+</h1>
+
 <p><?= nl2br(h($post->body)); ?></p>
 
 <?php if (count($post->comments)) : ?>

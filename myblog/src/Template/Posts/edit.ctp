@@ -5,6 +5,14 @@ $this->assign('title', 'Edit New');
 <h1>
     <?= $this->Html->link('Back', ['action'=>'index'], ['class'=>['pull-right', 'fs12']]); ?>
     Edit Post
+    <p>
+        Articles
+    <ul>
+        <?php foreach ($items as $item):?>
+            <li class="fs12"><?php echo $item->content; ?></li>
+        <?php endforeach; ?>
+    </ul>
+    </p>
 </h1>
 
 <?= $this->Form->create($post); ?>
@@ -15,20 +23,20 @@ $this->assign('title', 'Edit New');
 <select name="category_id">
     <option>カテゴリを選択してください</option>
     <?php foreach ($categories as $category): ?>
-    <option value=<?= h($category['id']); ?> <?= $post['category_id'] == $category['id'] ? 'selected' : "" ?>><?= h($category['name']); ?></option>
+        <option value=<?= h($category['id']); ?> <?= $post['category_id'] == $category['id'] ? 'selected' : "" ?>><?= h($category['name']); ?></option>
     <?php endforeach; ?>
 </select>
 <br>
 <?php foreach ($tags as $tag): ?>
     <?= $checked = ''; ?>
-<?php foreach ($post_tags as $post_tag) {
+    <?php foreach ($post_tags as $post_tag) {
         if ($post_tag->post_id == $post->id && $tag->id == $post_tag->tag_id) {
             $checked = 'checked';
             break;
         }
     }
-?>
-<input type="checkbox" name="tag_id[]" value=<?=h($tag->id)?> <?= $checked ?>> <?= h($tag->name) ?>
+    ?>
+    <input type="checkbox" name="tag_id[]" value=<?=h($tag->id)?> <?= $checked ?>> <?= h($tag->name) ?>
 <?php endforeach; ?>
 <br>
 <?= $this->Form->button('Update'); ?>
@@ -56,8 +64,13 @@ $this->assign('title', 'Edit New');
                 dataType: "text",
                 success: function (dom)
                 {
+                    // alert('保存完了');
                     //保存完了
                     //ここで、返り値（dom）を描画する
+                    // console.log(dom.getElementsByTagName("ul"));
+                    const element = document.createElement("p");
+                    const text = document.createTextNode(content);
+                    document.body.getElementsByClassName("container")[0].appendChild(element).appendChild(text);
                 },
                 error: function (XMLHttpRequest, textStatus, errorThrown) //通信失敗
                 {

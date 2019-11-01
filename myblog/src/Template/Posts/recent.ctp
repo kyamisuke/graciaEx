@@ -3,18 +3,14 @@ $this->assign('title', 'Blog Posts');
 ?>
 
 <h1>
-    Blog Posts
-    <?= $this->Html->link('Add New', ['action'=>'add'], ['class'=>['pull-right', 'fs12']]); ?>
-    <?= $this->Html->link('Categories List', ['controller'=>'Categories', 'action'=>'index'], ['class'=>['pull-right', 'fs12']]); ?>
-    <?= $this->Html->link('Tags List', ['controller'=>'Tags', 'action'=>'index'], ['class'=>['pull-right', 'fs12']]); ?>
-</h1>
-    <?= $this->Html->link('Recent Access Articles', ['action'=>'recent'], ['class'=>['fs12']]); ?>
-<h1>
-
+    Recent Access Articles
+    <?= $this->Html->link('Back', ['action'=>'index'], ['class'=>['pull-right', 'fs12']]); ?>
 </h1>
 
 <ul>
+    <?php foreach ($checked_articles as $check): ?>
     <?php foreach($posts as $post) : ?>
+    <?php if ($check == $post->id) : ?>
         <li>
             <?= $this->Html->image($post->image, array('height' => 100, 'width' => 100)) ?>
             <?= $this->Html->link($post->title, ['action'=>'view', $post->id]); ?>
@@ -27,5 +23,7 @@ $this->assign('title', 'Blog Posts');
             );
             ?>
         </li>
+    <?php endif; ?>
+    <?php endforeach; ?>
     <?php endforeach; ?>
 </ul>
